@@ -25,7 +25,7 @@ vs.push({
   icon: 'icon-more',
   action: 'showMore'
 }, el)
-// transtion back
+// transition back
 vs.back()
 ```
 
