@@ -46,20 +46,28 @@
 
 	var classes = __webpack_require__(1)
 	var ontap = __webpack_require__(3)
-	__webpack_require__(7)
-	var ViewStack = __webpack_require__(11)
+	var domify = __webpack_require__(7)
+	__webpack_require__(8)
+	var ViewStack = __webpack_require__(12)
 	
 	var header = document.querySelector('header')
 	var body = document.querySelector('.viewstack-body')
 	
 	var st = new ViewStack(header, body)
+	st.on('back', function (level) {
+	  console.log(level)
+	})
 	
+	var n = 0
 	function createDiv() {
+	  n ++
 	  var div = document.createElement('div')
 	  var push = document.createElement('div')
+	  //div.innerHTML = 'page ' + n
 	  push.className = 'push'
 	  push.setAttribute('data-title', 'Another')
 	  div.appendChild(push)
+	  div.appendChild(domify('<div>page ' + n + '</div>'))
 	  div.style.height = '500px'
 	  return div
 	}
@@ -486,15 +494,133 @@
 
 /***/ },
 /* 7 */
+/***/ function(module, exports) {
+
+	
+	/**
+	 * Expose `parse`.
+	 */
+	
+	module.exports = parse;
+	
+	/**
+	 * Tests for browser support.
+	 */
+	
+	var innerHTMLBug = false;
+	var bugTestDiv;
+	if (typeof document !== 'undefined') {
+	  bugTestDiv = document.createElement('div');
+	  // Setup
+	  bugTestDiv.innerHTML = '  <link/><table></table><a href="/a">a</a><input type="checkbox"/>';
+	  // Make sure that link elements get serialized correctly by innerHTML
+	  // This requires a wrapper element in IE
+	  innerHTMLBug = !bugTestDiv.getElementsByTagName('link').length;
+	  bugTestDiv = undefined;
+	}
+	
+	/**
+	 * Wrap map from jquery.
+	 */
+	
+	var map = {
+	  legend: [1, '<fieldset>', '</fieldset>'],
+	  tr: [2, '<table><tbody>', '</tbody></table>'],
+	  col: [2, '<table><tbody></tbody><colgroup>', '</colgroup></table>'],
+	  // for script/link/style tags to work in IE6-8, you have to wrap
+	  // in a div with a non-whitespace character in front, ha!
+	  _default: innerHTMLBug ? [1, 'X<div>', '</div>'] : [0, '', '']
+	};
+	
+	map.td =
+	map.th = [3, '<table><tbody><tr>', '</tr></tbody></table>'];
+	
+	map.option =
+	map.optgroup = [1, '<select multiple="multiple">', '</select>'];
+	
+	map.thead =
+	map.tbody =
+	map.colgroup =
+	map.caption =
+	map.tfoot = [1, '<table>', '</table>'];
+	
+	map.polyline =
+	map.ellipse =
+	map.polygon =
+	map.circle =
+	map.text =
+	map.line =
+	map.path =
+	map.rect =
+	map.g = [1, '<svg xmlns="http://www.w3.org/2000/svg" version="1.1">','</svg>'];
+	
+	/**
+	 * Parse `html` and return a DOM Node instance, which could be a TextNode,
+	 * HTML DOM Node of some kind (<div> for example), or a DocumentFragment
+	 * instance, depending on the contents of the `html` string.
+	 *
+	 * @param {String} html - HTML string to "domify"
+	 * @param {Document} doc - The `document` instance to create the Node for
+	 * @return {DOMNode} the TextNode, DOM Node, or DocumentFragment instance
+	 * @api private
+	 */
+	
+	function parse(html, doc) {
+	  if ('string' != typeof html) throw new TypeError('String expected');
+	
+	  // default to the global `document` object
+	  if (!doc) doc = document;
+	
+	  // tag name
+	  var m = /<([\w:]+)/.exec(html);
+	  if (!m) return doc.createTextNode(html);
+	
+	  html = html.replace(/^\s+|\s+$/g, ''); // Remove leading/trailing whitespace
+	
+	  var tag = m[1];
+	
+	  // body support
+	  if (tag == 'body') {
+	    var el = doc.createElement('html');
+	    el.innerHTML = html;
+	    return el.removeChild(el.lastChild);
+	  }
+	
+	  // wrap map
+	  var wrap = map[tag] || map._default;
+	  var depth = wrap[0];
+	  var prefix = wrap[1];
+	  var suffix = wrap[2];
+	  var el = doc.createElement('div');
+	  el.innerHTML = prefix + html + suffix;
+	  while (depth--) el = el.lastChild;
+	
+	  // one element
+	  if (el.firstChild == el.lastChild) {
+	    return el.removeChild(el.firstChild);
+	  }
+	
+	  // several elements
+	  var fragment = doc.createDocumentFragment();
+	  while (el.firstChild) {
+	    fragment.appendChild(el.removeChild(el.firstChild));
+	  }
+	
+	  return fragment;
+	}
+
+
+/***/ },
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 	
 	// load the styles
-	var content = __webpack_require__(8);
+	var content = __webpack_require__(9);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(10)(content, {});
+	var update = __webpack_require__(11)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -511,21 +637,21 @@
 	}
 
 /***/ },
-/* 8 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(9)();
+	exports = module.exports = __webpack_require__(10)();
 	// imports
 	
 	
 	// module
-	exports.push([module.id, ".viewstack-header {\n  height: 41px;\n  position: fixed;\n  line-height: 40px;\n  border-bottom: 1px solid #ebebeb;\n  background-color: #111;\n  text-align: center;\n  font-size: 13px;\n  color: #fff;\n  top: 0px;\n  left: 0px;\n  right: 0px;\n  z-index: 99;\n}\n.viewstack-header .viewstack-left {\n  position: absolute;\n  top: 0;\n  left: 8px;\n  z-index: 999;\n}\n.viewstack-header .viewstack-backicon {\n  display: inline-block;\n  width: 10px;\n  height: 30px;\n  background-repeat: no-repeat;\n  background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMDkuMTQzIDMwOS4xNDMiPjxwYXRoIGQ9Ik0xMTIuODU1IDE1NC41N0wyNDAuNDggMjYuOTQ3YTcuNSA3LjUgMCAwIDAgMC0xMC42MDZMMjI2LjM0IDIuMTk3YTcuNDk3IDcuNDk3IDAgMCAwLTEwLjYwNyAwTDY4LjY2IDE0OS4yNjdhNy41IDcuNSAwIDAgMCAwIDEwLjYwN2wxNDcuMDcyIDE0Ny4wN2E3LjQ5NyA3LjQ5NyAwIDAgMCAxMC42MDYgMGwxNC4xNDItMTQuMTQyYTcuNSA3LjUgMCAwIDAgMC0xMC42MDZMMTEyLjg1NSAxNTQuNTd6IiBmaWxsPSIjZmZmZmZmIi8+PC9zdmc+Cg==);\n  background-position: center;\n}\n.viewstack-header .viewstack-left > *{\n  display: inline-block;\n  vertical-align: middle;\n}\n.viewstack-header .viewstack-backtext{\n  min-width: 20px;\n  height: 40px;\n  white-space: pre;\n}\n.viewstack-header .viewstack-left:focus,\n.viewstack-header .viewstack-left:active {\n  -webkit-filter: brightness(0.6);\n  filter: brightness(0.6);\n}\n.viewstack-header .viewstack-action,\n.viewstack-header .viewstack-title,\n.viewstack-header .viewstack-backicon,\n.viewstack-header .viewstack-backtext{\n  transition: all 400ms linear;\n}\n.viewstack-header {\n  transition: transform 400ms linear;\n}\n.viewstack-header.fadeout .viewstack-left{\n  -webkit-filter: brightness(0.6);\n  filter: brightness(0.6);\n}\n.viewstack-body {\n  position: fixed;\n  top: 41px;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  transition: transform 400ms linear;\n  background-color: #fff;\n}\n.viewstack-body.fadeout {\n  transform: translateX(-100px);\n}\n", ""]);
+	exports.push([module.id, ".viewstack-header {\n  height: 41px;\n  position: fixed;\n  line-height: 40px;\n  border-bottom: 1px solid #ebebeb;\n  background-color: #111;\n  text-align: center;\n  font-size: 14px;\n  color: #fff;\n  top: 0px;\n  left: 0px;\n  right: 0px;\n  z-index: 99;\n  -webkit-user-select: none;\n  user-select: none;\n  -moz-user-select: none;\n  -ms-user-select: none;\n  -o-user-select: none;\n}\n.viewstack-header .viewstack-left {\n  position: absolute;\n  top: 0;\n  left: 8px;\n  z-index: 999;\n}\n.viewstack-header .viewstack-backicon {\n  display: inline-block;\n  width: 14px;\n  height: 40px;\n  background-repeat: no-repeat;\n  background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMDkuMTQzIDMwOS4xNDMiPjxwYXRoIGQ9Ik0xMTIuODU1IDE1NC41N0wyNDAuNDggMjYuOTQ3YTcuNSA3LjUgMCAwIDAgMC0xMC42MDZMMjI2LjM0IDIuMTk3YTcuNDk3IDcuNDk3IDAgMCAwLTEwLjYwNyAwTDY4LjY2IDE0OS4yNjdhNy41IDcuNSAwIDAgMCAwIDEwLjYwN2wxNDcuMDcyIDE0Ny4wN2E3LjQ5NyA3LjQ5NyAwIDAgMCAxMC42MDYgMGwxNC4xNDItMTQuMTQyYTcuNSA3LjUgMCAwIDAgMC0xMC42MDZMMTEyLjg1NSAxNTQuNTd6IiBmaWxsPSIjZmZmZmZmIi8+PC9zdmc+Cg==);\n  background-position: center;\n}\n.viewstack-header .viewstack-left > *{\n  display: inline-block;\n  vertical-align: middle;\n}\n.viewstack-header .viewstack-backtext{\n  min-width: 40px;\n  text-align: left;\n  height: 40px;\n  white-space: pre;\n}\n.viewstack-header .viewstack-left:focus,\n.viewstack-header .viewstack-left:active {\n  -webkit-filter: brightness(0.6);\n  filter: brightness(0.6);\n}\n.viewstack-header .viewstack-action,\n.viewstack-header .viewstack-title,\n.viewstack-header .viewstack-backicon,\n.viewstack-header .viewstack-backtext{\n  transition: all 400ms linear;\n}\n.viewstack-header {\n  transition: transform 400ms linear;\n}\n.viewstack-header.fadeout .viewstack-left{\n  -webkit-filter: brightness(0.6);\n  filter: brightness(0.6);\n}\n.viewstack-body {\n  position: fixed;\n  top: 41px;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  transition: transform 400ms linear;\n  background-color: #fff;\n  overflow-y: scroll;\n  -webkit-overflow-scrolling: touch;\n}\n", ""]);
 	
 	// exports
 
 
 /***/ },
-/* 9 */
+/* 10 */
 /***/ function(module, exports) {
 
 	/*
@@ -581,7 +707,7 @@
 
 
 /***/ },
-/* 10 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -833,12 +959,12 @@
 
 
 /***/ },
-/* 11 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var event = __webpack_require__(5)
-	var closest = __webpack_require__(12)
-	var domify = __webpack_require__(15)
+	var closest = __webpack_require__(13)
+	var domify = __webpack_require__(7)
 	var computedStyle = __webpack_require__(16)
 	var ontap = __webpack_require__(3)
 	var classes = __webpack_require__(1)
@@ -846,8 +972,10 @@
 	var transitionEnd = detect.transitionend
 	var transform = detect.transform
 	var headerTemplate = __webpack_require__(23)
+	var Emitter = __webpack_require__(24)
 	
 	function ViewStack(head, body, delegate) {
+	  if (!(this instanceof ViewStack)) return new ViewStack(head, body, delegate)
 	  this.originHead = head
 	  this.parent = body.parentNode
 	  // title body
@@ -864,10 +992,18 @@
 	  this.ontap = ontap(this.originHead.parentNode, this.ontap.bind(this))
 	}
 	
+	Emitter(ViewStack.prototype)
+	
+	ViewStack.prototype.unbind = function () {
+	  this.ontap.unbind()
+	  this.stack = []
+	}
+	
 	ViewStack.prototype.ontap = function (e) {
 	  var target = e.target
-	  if (/viewstack-back/.test(target.className)) {
+	  if (/viewstack-(back|left)/.test(target.className)) {
 	    this.back()
+	    return
 	  }
 	  var action = closest(target, '.viewstack-action')
 	  if (!action || !action.firstElementChild) return
@@ -919,19 +1055,27 @@
 	ViewStack.prototype.titleFadeIn = function (config) {
 	  var el = domify(headerTemplate)
 	  var back = el.querySelector('.viewstack-backtext')
+	  var backicon = el.querySelector('.viewstack-backicon')
 	  var title = el.querySelector('.viewstack-title')
 	  var action = el.querySelector('.viewstack-action')
 	  back.textContent = config.back || '  '
-	  title.textContent = config.text
+	  if (config.text) {
+	    title.appendChild(domify(config.text))
+	  }
 	  var span = document.createElement('span')
 	  span.className = config.icon || 'icon-empty'
+	  if (config.action) span.setAttribute('on-tap', config.action)
 	  action.appendChild(span)
+	  backicon.style.opacity = 0
 	  back.style.opacity = 0
+	  back.style[transform] = 'translateX(100%)'
 	  title.style[transform] = 'translateX(200px)'
 	  title.style.opacity = 0
 	  action.style.opacity = 0
 	  setTimeout(function () {
+	    backicon.style.opacity = 1
 	    back.style.opacity = 1
+	    back.style[transform] = 'translateX(0px)'
 	    title.style[transform] = 'translateX(0px)'
 	    title.style.opacity = 1
 	    action.style.opacity = 1
@@ -943,7 +1087,10 @@
 	  var back = el.querySelector('.viewstack-backtext')
 	  var title = el.querySelector('.viewstack-title')
 	  var action = el.querySelector('.viewstack-action')
-	  if (back) back.style.opacity = 0
+	  if (back) {
+	    back.style.opacity = 0
+	    back.style[transform] = 'translateX(100%)'
+	  }
 	  if (title) {
 	    title.style[transform] = 'translateX(200px)'
 	    title.style.opacity = 0
@@ -972,16 +1119,16 @@
 	    title.style.display = 'none'
 	    body.style.display = 'none'
 	    body.style.boxShadow = 'none'
-	  }, 100)
+	  }, 10)
 	  classes(title).add('fadeout')
-	  classes(body).add('fadeout')
 	  body.style.boxShadow = 'inset 0px 1px 21px rgba(0,0,0,0.3)'
+	  body.style[transform] = 'translateX(-100px)'
 	  var selectors = ['.viewstack-backtext', '.viewstack-title', '.viewstack-action']
 	  selectors.forEach(function (selector) {
 	    var el = title.querySelector(selector)
 	    if (!el) return
 	    el.style.opacity = 0
-	    if (selector === '.viewstack-title') {
+	    if (selector === '.viewstack-title'|| selector === '.viewstack-backtext') {
 	      el.style[transform] = 'translateX(-100px)'
 	    }
 	  })
@@ -992,12 +1139,12 @@
 	    setTimeout(function () {
 	      title.style.backgroundColor = origColor
 	      classes(title).remove('fadeout')
-	      classes(body).remove('fadeout')
+	      body.style[transform] = 'translateX(0px)'
 	      selectors.forEach(function (selector) {
 	        var el = title.querySelector(selector)
 	        if (!el) return
 	        el.style.opacity = 1
-	        if (selector === '.viewstack-title') {
+	        if (selector === '.viewstack-title' || selector === '.viewstack-backtext') {
 	          el.style[transform] = 'translateX(0px)'
 	        }
 	      })
@@ -1030,6 +1177,7 @@
 	  this.animating = true
 	  //restore old title and body
 	  current.restore()
+	  this.emit('back', current.body, this.stack.length)
 	}
 	
 	function transition(el, handler, delay) {
@@ -1047,7 +1195,7 @@
 
 
 /***/ },
-/* 12 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -1055,9 +1203,9 @@
 	 */
 	
 	try {
-	  var matches = __webpack_require__(13)
+	  var matches = __webpack_require__(14)
 	} catch (err) {
-	  var matches = __webpack_require__(13)
+	  var matches = __webpack_require__(14)
 	}
 	
 	/**
@@ -1089,7 +1237,7 @@
 
 
 /***/ },
-/* 13 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -1097,9 +1245,9 @@
 	 */
 	
 	try {
-	  var query = __webpack_require__(14);
+	  var query = __webpack_require__(15);
 	} catch (err) {
-	  var query = __webpack_require__(14);
+	  var query = __webpack_require__(15);
 	}
 	
 	/**
@@ -1145,7 +1293,7 @@
 
 
 /***/ },
-/* 14 */
+/* 15 */
 /***/ function(module, exports) {
 
 	function one(selector, el) {
@@ -1169,124 +1317,6 @@
 	  exports.all = obj.all;
 	  return exports;
 	};
-
-
-/***/ },
-/* 15 */
-/***/ function(module, exports) {
-
-	
-	/**
-	 * Expose `parse`.
-	 */
-	
-	module.exports = parse;
-	
-	/**
-	 * Tests for browser support.
-	 */
-	
-	var innerHTMLBug = false;
-	var bugTestDiv;
-	if (typeof document !== 'undefined') {
-	  bugTestDiv = document.createElement('div');
-	  // Setup
-	  bugTestDiv.innerHTML = '  <link/><table></table><a href="/a">a</a><input type="checkbox"/>';
-	  // Make sure that link elements get serialized correctly by innerHTML
-	  // This requires a wrapper element in IE
-	  innerHTMLBug = !bugTestDiv.getElementsByTagName('link').length;
-	  bugTestDiv = undefined;
-	}
-	
-	/**
-	 * Wrap map from jquery.
-	 */
-	
-	var map = {
-	  legend: [1, '<fieldset>', '</fieldset>'],
-	  tr: [2, '<table><tbody>', '</tbody></table>'],
-	  col: [2, '<table><tbody></tbody><colgroup>', '</colgroup></table>'],
-	  // for script/link/style tags to work in IE6-8, you have to wrap
-	  // in a div with a non-whitespace character in front, ha!
-	  _default: innerHTMLBug ? [1, 'X<div>', '</div>'] : [0, '', '']
-	};
-	
-	map.td =
-	map.th = [3, '<table><tbody><tr>', '</tr></tbody></table>'];
-	
-	map.option =
-	map.optgroup = [1, '<select multiple="multiple">', '</select>'];
-	
-	map.thead =
-	map.tbody =
-	map.colgroup =
-	map.caption =
-	map.tfoot = [1, '<table>', '</table>'];
-	
-	map.polyline =
-	map.ellipse =
-	map.polygon =
-	map.circle =
-	map.text =
-	map.line =
-	map.path =
-	map.rect =
-	map.g = [1, '<svg xmlns="http://www.w3.org/2000/svg" version="1.1">','</svg>'];
-	
-	/**
-	 * Parse `html` and return a DOM Node instance, which could be a TextNode,
-	 * HTML DOM Node of some kind (<div> for example), or a DocumentFragment
-	 * instance, depending on the contents of the `html` string.
-	 *
-	 * @param {String} html - HTML string to "domify"
-	 * @param {Document} doc - The `document` instance to create the Node for
-	 * @return {DOMNode} the TextNode, DOM Node, or DocumentFragment instance
-	 * @api private
-	 */
-	
-	function parse(html, doc) {
-	  if ('string' != typeof html) throw new TypeError('String expected');
-	
-	  // default to the global `document` object
-	  if (!doc) doc = document;
-	
-	  // tag name
-	  var m = /<([\w:]+)/.exec(html);
-	  if (!m) return doc.createTextNode(html);
-	
-	  html = html.replace(/^\s+|\s+$/g, ''); // Remove leading/trailing whitespace
-	
-	  var tag = m[1];
-	
-	  // body support
-	  if (tag == 'body') {
-	    var el = doc.createElement('html');
-	    el.innerHTML = html;
-	    return el.removeChild(el.lastChild);
-	  }
-	
-	  // wrap map
-	  var wrap = map[tag] || map._default;
-	  var depth = wrap[0];
-	  var prefix = wrap[1];
-	  var suffix = wrap[2];
-	  var el = doc.createElement('div');
-	  el.innerHTML = prefix + html + suffix;
-	  while (depth--) el = el.lastChild;
-	
-	  // one element
-	  if (el.firstChild == el.lastChild) {
-	    return el.removeChild(el.firstChild);
-	  }
-	
-	  // several elements
-	  var fragment = doc.createDocumentFragment();
-	  while (el.firstChild) {
-	    fragment.appendChild(el.removeChild(el.firstChild));
-	  }
-	
-	  return fragment;
-	}
 
 
 /***/ },
@@ -1479,6 +1509,173 @@
 /***/ function(module, exports) {
 
 	module.exports = "<div class=\"viewstack-header\">\n  <div class=\"viewstack-left\">\n    <span class=\"viewstack-backicon\"></span>\n    <span class=\"viewstack-backtext\"></span>\n  </div>\n  <div class=\"viewstack-title\">\n  </div>\n  <div class=\"viewstack-action\">\n  </div>\n</div>\n";
+
+/***/ },
+/* 24 */
+/***/ function(module, exports) {
+
+	
+	/**
+	 * Expose `Emitter`.
+	 */
+	
+	module.exports = Emitter;
+	
+	/**
+	 * Initialize a new `Emitter`.
+	 *
+	 * @api public
+	 */
+	
+	function Emitter(obj) {
+	  if (obj) return mixin(obj);
+	};
+	
+	/**
+	 * Mixin the emitter properties.
+	 *
+	 * @param {Object} obj
+	 * @return {Object}
+	 * @api private
+	 */
+	
+	function mixin(obj) {
+	  for (var key in Emitter.prototype) {
+	    obj[key] = Emitter.prototype[key];
+	  }
+	  return obj;
+	}
+	
+	/**
+	 * Listen on the given `event` with `fn`.
+	 *
+	 * @param {String} event
+	 * @param {Function} fn
+	 * @return {Emitter}
+	 * @api public
+	 */
+	
+	Emitter.prototype.on =
+	Emitter.prototype.addEventListener = function(event, fn){
+	  this._callbacks = this._callbacks || {};
+	  (this._callbacks['$' + event] = this._callbacks['$' + event] || [])
+	    .push(fn);
+	  return this;
+	};
+	
+	/**
+	 * Adds an `event` listener that will be invoked a single
+	 * time then automatically removed.
+	 *
+	 * @param {String} event
+	 * @param {Function} fn
+	 * @return {Emitter}
+	 * @api public
+	 */
+	
+	Emitter.prototype.once = function(event, fn){
+	  function on() {
+	    this.off(event, on);
+	    fn.apply(this, arguments);
+	  }
+	
+	  on.fn = fn;
+	  this.on(event, on);
+	  return this;
+	};
+	
+	/**
+	 * Remove the given callback for `event` or all
+	 * registered callbacks.
+	 *
+	 * @param {String} event
+	 * @param {Function} fn
+	 * @return {Emitter}
+	 * @api public
+	 */
+	
+	Emitter.prototype.off =
+	Emitter.prototype.removeListener =
+	Emitter.prototype.removeAllListeners =
+	Emitter.prototype.removeEventListener = function(event, fn){
+	  this._callbacks = this._callbacks || {};
+	
+	  // all
+	  if (0 == arguments.length) {
+	    this._callbacks = {};
+	    return this;
+	  }
+	
+	  // specific event
+	  var callbacks = this._callbacks['$' + event];
+	  if (!callbacks) return this;
+	
+	  // remove all handlers
+	  if (1 == arguments.length) {
+	    delete this._callbacks['$' + event];
+	    return this;
+	  }
+	
+	  // remove specific handler
+	  var cb;
+	  for (var i = 0; i < callbacks.length; i++) {
+	    cb = callbacks[i];
+	    if (cb === fn || cb.fn === fn) {
+	      callbacks.splice(i, 1);
+	      break;
+	    }
+	  }
+	  return this;
+	};
+	
+	/**
+	 * Emit `event` with the given args.
+	 *
+	 * @param {String} event
+	 * @param {Mixed} ...
+	 * @return {Emitter}
+	 */
+	
+	Emitter.prototype.emit = function(event){
+	  this._callbacks = this._callbacks || {};
+	  var args = [].slice.call(arguments, 1)
+	    , callbacks = this._callbacks['$' + event];
+	
+	  if (callbacks) {
+	    callbacks = callbacks.slice(0);
+	    for (var i = 0, len = callbacks.length; i < len; ++i) {
+	      callbacks[i].apply(this, args);
+	    }
+	  }
+	
+	  return this;
+	};
+	
+	/**
+	 * Return array of callbacks for `event`.
+	 *
+	 * @param {String} event
+	 * @return {Array}
+	 * @api public
+	 */
+	
+	Emitter.prototype.listeners = function(event){
+	  this._callbacks = this._callbacks || {};
+	  return this._callbacks['$' + event] || [];
+	};
+	
+	/**
+	 * Check if this emitter has `event` handlers.
+	 *
+	 * @param {String} event
+	 * @return {Boolean}
+	 * @api public
+	 */
+	
+	Emitter.prototype.hasListeners = function(event){
+	  return !! this.listeners(event).length;
+	};
+
 
 /***/ }
 /******/ ]);
