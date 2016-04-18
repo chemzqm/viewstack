@@ -8,6 +8,9 @@ var header = document.querySelector('header')
 var body = document.querySelector('.viewstack-body')
 
 var st = new ViewStack(header, body)
+st.on('back', function (level) {
+  console.log(level)
+})
 
 var n = 0
 function createDiv() {
