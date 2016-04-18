@@ -35,6 +35,6 @@ ontap(document.body, function (e) {
       back: back,
       text: target.getAttribute('data-title') || 'title',
       icon: 'icon-plus'
-    }, createDiv())
+    }, createDiv(), true)
   }
 })
