@@ -6,8 +6,6 @@ Flexible view switch component build with lightweight components.
 
 **WIP** use with caution.
 
-TODO: emit back event, improve back transition, remove fading class
-
 ## Install
 
      npm i viewstack -S
