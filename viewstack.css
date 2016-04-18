@@ -11,6 +11,11 @@
   left: 0px;
   right: 0px;
   z-index: 99;
+  -webkit-user-select: none;
+  user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
 }
 .viewstack-header .viewstack-left {
   position: absolute;

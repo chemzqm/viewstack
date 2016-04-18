@@ -1,5 +1,6 @@
 var classes = require('classes')
 var ontap = require('ontap')
+var domify = require('domify')
 require('../viewstack.css')
 var ViewStack = require('..')
 
@@ -8,12 +9,16 @@ var body = document.querySelector('.viewstack-body')
 
 var st = new ViewStack(header, body)
 
+var n = 0
 function createDiv() {
+  n ++
   var div = document.createElement('div')
   var push = document.createElement('div')
+  //div.innerHTML = 'page ' + n
   push.className = 'push'
   push.setAttribute('data-title', 'Another')
   div.appendChild(push)
+  div.appendChild(domify('<div>page ' + n + '</div>'))
   div.style.height = '500px'
   return div
 }
