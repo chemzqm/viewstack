@@ -59,6 +59,7 @@
     "absoluty": "0.0.1",
     "component-classes": "^1.2.6",
     "component-closest": "^1.0.1",
+    "component-emitter": "^1.2.0",
     "component-event": "^0.1.4",
     "component-events": "^1.0.10",
     "computed-style": "^0.3.0",
@@ -70,6 +71,7 @@
     "classes": "component-classes",
     "events": "component-events",
     "closest": "component-closest",
-    "event": "component-event"
+    "event": "component-event",
+    "emitter": "component-emitter"
   }
 }
