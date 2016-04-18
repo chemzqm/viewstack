@@ -62,6 +62,3 @@
   transition: transform 400ms linear;
   background-color: #fff;
 }
-.viewstack-body.fadeout {
-  transform: translateX(-100px);
-}

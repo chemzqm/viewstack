@@ -6,6 +6,8 @@ Flexible view switch component build with lightweight components.
 
 **WIP** use with caution.
 
+TODO: emit back event, improve back transition, remove fading class
+
 ## Install
 
      npm i viewstack -S
@@ -43,7 +45,7 @@ Init ViewStack with head element, body element, and optional delegate object.
 
 Add a new view with title config and body as content element.
 
-* `title.text` for title text.
+* `title.text` for title text (could be html)
 * `title.back` [optional] for back text.
 * `title.bgColor` [optional] background color of new title.
 * `title.icon` [optional] icon className for right icon.

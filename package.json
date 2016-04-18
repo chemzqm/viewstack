@@ -62,6 +62,7 @@
     "component-event": "^0.1.4",
     "component-events": "^1.0.10",
     "computed-style": "^0.3.0",
+    "domify": "^1.4.0",
     "ontap": "^0.1.0",
     "prop-detect": "^1.0.2"
   },
