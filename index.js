@@ -26,15 +26,34 @@ function createDiv() {
   return div
 }
 
+function createComponent() {
+  var div = createDiv()
+  return {
+    el: div,
+    create: function (e) {
+      st.push({
+        back: '列表',
+        text: '编辑',
+        icon: 'icon-submit'
+      }, createDiv())
+    },
+    remove: function () {
+      div.parentNode.removeChild(div)
+    }
+  }
+}
+
 ontap(document.body, function (e) {
   var target = e.target
   var back = target.getAttribute('data-back') == 1 ? '返回' : ''
+  var body = back ? createComponent() : createDiv()
   if (classes(target).has('push')) {
     st.push({
       bgColor: '#111',
       back: back,
-      text: target.getAttribute('data-title') || 'title',
-      icon: 'icon-plus'
-    }, createDiv())
+      text: target.getAttribute('data-title') || '列表',
+      icon: back ? 'icon-plus' : null,
+      action: back ? 'create' : null
+    }, body)
   }
 })

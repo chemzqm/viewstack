@@ -2,6 +2,7 @@
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
 }
 
 body, html {
@@ -75,4 +76,20 @@ header.fadeout a {
   width: 100%;
   height: 60px;
   margin-top: 50px;
+}
+.icon-plus {
+  width: 100%;
+  display: block;
+  height: 40px;
+  line-height: 40px;
+  position: relative;
+  font-size: 24px;
+}
+.icon-plus::after {
+  content: '+';
+  text-align: center;
+  position: absolute;
+  left: 0;
+  right: 0;
+  line-height: 40px;
 }

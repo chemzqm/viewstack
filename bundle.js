@@ -72,16 +72,35 @@
 	  return div
 	}
 	
+	function createComponent() {
+	  var div = createDiv()
+	  return {
+	    el: div,
+	    create: function (e) {
+	      st.push({
+	        back: '列表',
+	        text: '编辑',
+	        icon: 'icon-submit'
+	      }, createDiv())
+	    },
+	    remove: function () {
+	      div.parentNode.removeChild(div)
+	    }
+	  }
+	}
+	
 	ontap(document.body, function (e) {
 	  var target = e.target
 	  var back = target.getAttribute('data-back') == 1 ? '返回' : ''
+	  var body = back ? createComponent() : createDiv()
 	  if (classes(target).has('push')) {
 	    st.push({
 	      bgColor: '#111',
 	      back: back,
-	      text: target.getAttribute('data-title') || 'title',
-	      icon: 'icon-plus'
-	    }, createDiv())
+	      text: target.getAttribute('data-title') || '列表',
+	      icon: back ? 'icon-plus' : null,
+	      action: back ? 'create' : null
+	    }, body)
 	  }
 	})
 
@@ -645,7 +664,7 @@
 	
 	
 	// module
-	exports.push([module.id, ".viewstack-header {\n  height: 41px;\n  position: fixed;\n  line-height: 40px;\n  border-bottom: 1px solid #ebebeb;\n  background-color: #111;\n  text-align: center;\n  font-size: 14px;\n  color: #fff;\n  top: 0px;\n  left: 0px;\n  right: 0px;\n  z-index: 99;\n  -webkit-user-select: none;\n  user-select: none;\n  -moz-user-select: none;\n  -ms-user-select: none;\n  -o-user-select: none;\n}\n.viewstack-header .viewstack-left {\n  position: absolute;\n  top: 0;\n  left: 8px;\n  z-index: 999;\n}\n.viewstack-header .viewstack-backicon {\n  display: inline-block;\n  width: 14px;\n  height: 40px;\n  background-repeat: no-repeat;\n  background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMDkuMTQzIDMwOS4xNDMiPjxwYXRoIGQ9Ik0xMTIuODU1IDE1NC41N0wyNDAuNDggMjYuOTQ3YTcuNSA3LjUgMCAwIDAgMC0xMC42MDZMMjI2LjM0IDIuMTk3YTcuNDk3IDcuNDk3IDAgMCAwLTEwLjYwNyAwTDY4LjY2IDE0OS4yNjdhNy41IDcuNSAwIDAgMCAwIDEwLjYwN2wxNDcuMDcyIDE0Ny4wN2E3LjQ5NyA3LjQ5NyAwIDAgMCAxMC42MDYgMGwxNC4xNDItMTQuMTQyYTcuNSA3LjUgMCAwIDAgMC0xMC42MDZMMTEyLjg1NSAxNTQuNTd6IiBmaWxsPSIjZmZmZmZmIi8+PC9zdmc+Cg==);\n  background-position: center;\n}\n.viewstack-header .viewstack-left > *{\n  display: inline-block;\n  vertical-align: middle;\n}\n.viewstack-header .viewstack-backtext{\n  min-width: 40px;\n  text-align: left;\n  height: 40px;\n  white-space: pre;\n}\n.viewstack-header .viewstack-left:focus,\n.viewstack-header .viewstack-left:active {\n  -webkit-filter: brightness(0.6);\n  filter: brightness(0.6);\n}\n.viewstack-header .viewstack-action,\n.viewstack-header .viewstack-title,\n.viewstack-header .viewstack-backicon,\n.viewstack-header .viewstack-backtext{\n  transition: all 400ms linear;\n}\n.viewstack-header {\n  transition: transform 400ms linear;\n}\n.viewstack-header.fadeout .viewstack-left{\n  -webkit-filter: brightness(0.6);\n  filter: brightness(0.6);\n}\n.viewstack-body {\n  position: fixed;\n  top: 41px;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  transition: transform 400ms linear;\n  background-color: #fff;\n  overflow-y: scroll;\n  -webkit-overflow-scrolling: touch;\n}\n", ""]);
+	exports.push([module.id, ".viewstack-header {\n  height: 41px;\n  position: fixed;\n  line-height: 40px;\n  border-bottom: 1px solid #ebebeb;\n  background-color: #111;\n  text-align: center;\n  font-size: 14px;\n  color: #fff;\n  top: 0px;\n  left: 0px;\n  right: 0px;\n  z-index: 99;\n  user-select: none;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  -ms-user-select: none;\n  -o-user-select: none;\n}\n.viewstack-header .viewstack-left {\n  position: absolute;\n  top: 0;\n  left: 8px;\n  z-index: 999;\n}\n.viewstack-header .viewstack-backicon {\n  display: inline-block;\n  width: 14px;\n  height: 40px;\n  background-repeat: no-repeat;\n  background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMDkuMTQzIDMwOS4xNDMiPjxwYXRoIGQ9Ik0xMTIuODU1IDE1NC41N0wyNDAuNDggMjYuOTQ3YTcuNSA3LjUgMCAwIDAgMC0xMC42MDZMMjI2LjM0IDIuMTk3YTcuNDk3IDcuNDk3IDAgMCAwLTEwLjYwNyAwTDY4LjY2IDE0OS4yNjdhNy41IDcuNSAwIDAgMCAwIDEwLjYwN2wxNDcuMDcyIDE0Ny4wN2E3LjQ5NyA3LjQ5NyAwIDAgMCAxMC42MDYgMGwxNC4xNDItMTQuMTQyYTcuNSA3LjUgMCAwIDAgMC0xMC42MDZMMTEyLjg1NSAxNTQuNTd6IiBmaWxsPSIjZmZmZmZmIi8+PC9zdmc+Cg==);\n  background-position: center;\n}\n.viewstack-header .viewstack-left > *{\n  display: inline-block;\n  vertical-align: middle;\n}\n.viewstack-header .viewstack-backtext{\n  min-width: 40px;\n  text-align: left;\n  height: 40px;\n  white-space: pre;\n}\n.viewstack-header .viewstack-left:focus,\n.viewstack-header .viewstack-left:active {\n  opacity: 0.6;\n}\n.viewstack-header .viewstack-left,\n.viewstack-header .viewstack-action,\n.viewstack-header .viewstack-title,\n.viewstack-header .viewstack-backicon,\n.viewstack-header .viewstack-backtext{\n  transition: all 300ms linear;\n}\n.viewstack-header {\n  transition: transform 300ms linear;\n}\n.viewstack-header.fadeout .viewstack-left{\n  opacity: 0.6;\n}\n.viewstack-body {\n  position: fixed;\n  top: 41px;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  transition: transform 300ms linear;\n  background-color: #fff;\n  overflow-y: scroll;\n  -webkit-overflow-scrolling: touch;\n}\n.viewstack-action {\n  opacity: 1;\n  position: absolute;\n  bottom: 0px;\n  width: 40px;\n  right: 0px;\n  top: 0;\n}\n\n", ""]);
 	
 	// exports
 
@@ -972,11 +991,11 @@
 	var transitionEnd = detect.transitionend
 	var transform = detect.transform
 	var headerTemplate = __webpack_require__(23)
-	var Emitter = __webpack_require__(24)
+	var Iscroll = __webpack_require__(24)
+	var Emitter = __webpack_require__(25)
 	
 	function ViewStack(head, body, delegate) {
 	  if (!(this instanceof ViewStack)) return new ViewStack(head, body, delegate)
-	  this.originHead = head
 	  this.parent = body.parentNode
 	  // title body
 	  this.stack = []
@@ -985,11 +1004,13 @@
 	    title: head,
 	    body: body
 	  }
+	  var headContainer = this.headContainer = document.createElement('div')
+	  head.parentNode.appendChild(headContainer)
 	  this.stack.push(this.current)
 	  this.titleEl = domify(headerTemplate)
 	  this.titleEl.style.display = 'none'
 	  this.delegate = delegate
-	  this.ontap = ontap(this.originHead.parentNode, this.ontap.bind(this))
+	  this.ontap = ontap(headContainer, this.ontap.bind(this))
 	}
 	
 	Emitter(ViewStack.prototype)
@@ -1008,9 +1029,18 @@
 	  var action = closest(target, '.viewstack-action')
 	  if (!action || !action.firstElementChild) return
 	  var name = action.firstElementChild.getAttribute('on-tap')
-	  var fn = this.delegate[name]
-	  if (typeof fn  === 'function') {
-	    fn.call(this.delegate, e)
+	  var component = this.current.component
+	  if (this.delegate) {
+	    var fn = this.delegate[name]
+	    if (typeof fn  === 'function') {
+	      fn.call(this.delegate, e)
+	    }
+	  } else if (component){
+	    var handler = component[name]
+	    if (typeof handler !== 'function') throw new Error('handler ' + name + ' not found on current component')
+	    handler.call(component, e)
+	  } else {
+	    throw new Error('handler ' + name + ' not found')
 	  }
 	}
 	/**
@@ -1018,15 +1048,22 @@
 	 *
 	 * @public
 	 * @param {Object} title
-	 * @param {Element} body
+	 * @param {Element|Component} body
+	 * @param {Boolean} useIscroll
 	 */
-	ViewStack.prototype.push = function (title, body) {
+	ViewStack.prototype.push = function (title, body, useIscroll) {
 	  if (this.animating) return
+	  var component
+	  if (body.el && body.el.nodeType == 1 && typeof body.remove === 'function') {
+	    component = body
+	    body = component.el.parentNode || component.el
+	  }
+	  title.bgColor = title.bgColor || this.current.bgColor
 	  // Fadein titleEl
 	  var titleEl = this.titleFadeIn(title)
 	  var bgColor = title.bgColor
 	  titleEl.style.backgroundColor = 'rgba(0,0,0,0)'
-	  this.originHead.parentNode.appendChild(titleEl)
+	  this.headContainer.appendChild(titleEl)
 	  // Fadeout current title and body
 	  var restore = this.fadeout(bgColor, titleEl)
 	  // Fadein new body
@@ -1047,7 +1084,11 @@
 	    bgColor: bgColor,
 	    title: titleEl,
 	    body: el,
-	    restore: restore
+	    restore: restore,
+	    component: component
+	  }
+	  if (useIscroll) {
+	    current.iscroll = new Iscroll(el, {handlebar: true})
 	  }
 	  this.stack.push(current)
 	}
@@ -1148,7 +1189,7 @@
 	          el.style[transform] = 'translateX(0px)'
 	        }
 	      })
-	    })
+	    }, 20)
 	  }
 	}
 	
@@ -1170,11 +1211,17 @@
 	    if (title.parentNode) title.parentNode.removeChild(title)
 	    self.animating = false
 	    self.current = old
-	  }, 100)
+	  }, 20)
 	  // fadeout current body
 	  body.style[transform] = 'translateX(100%)'
 	  body.style.boxShadow = '0 7px 21px rgba(0,0,0,0.3)';
 	  this.animating = true
+	  if (current.component) {
+	    current.component.remove()
+	  }
+	  if (current.iscroll) {
+	    current.iscroll.unbind()
+	  }
 	  //restore old title and body
 	  current.restore()
 	  this.emit('back', current.body, this.stack.length)
@@ -1512,6 +1559,453 @@
 
 /***/ },
 /* 24 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var detect = __webpack_require__(17)
+	var touchAction = detect.touchAction
+	var transform = detect.transform
+	var has3d = detect.has3d
+	var Emitter = __webpack_require__(25)
+	var events = __webpack_require__(26)
+	var Tween = __webpack_require__(28)
+	var raf = __webpack_require__(32)
+	var throttle = __webpack_require__(33)
+	var Handlebar = __webpack_require__(34)
+	var max = Math.max
+	var min = Math.min
+	var now = Date.now
+	var height = __webpack_require__(35)
+	
+	var defineProperty = Object.defineProperty
+	
+	/**
+	 * Create custom event
+	 *
+	 * @param {String} name
+	 * @return {Event}
+	 * @api private
+	 */
+	function customEvent(name) {
+	  var e
+	  try {
+	    e = new CustomEvent(name)
+	  } catch (error) {
+	    try {
+	      e = document.createEvent('CustomEvent')
+	      e.initCustomEvent(name, false, false, 0)
+	    } catch (err) {
+	      return
+	    }
+	  }
+	  return e
+	}
+	
+	/**
+	 * Init iscroll with el and optional options
+	 * options.handlebar show handlebar if is true
+	 *
+	 * @param  {Element}  el
+	 * @param {Object} opts
+	 * @api public
+	 */
+	function Iscroll(el, opts) {
+	  if (!(this instanceof Iscroll)) return new Iscroll(el, opts)
+	  this.y = 0
+	  this.scrollable = el
+	  el.style.overflow = 'hidden'
+	  var children = el.children
+	  if (children.length !== 1) {
+	    throw new Error('iscroll need single element child of scrollable to work')
+	  }
+	  this.el = children[0]
+	  this.touchAction('none')
+	  this.refresh(true)
+	  this.bind()
+	  var self = this
+	  if (defineProperty) {
+	    defineProperty(this.scrollable, 'scrollTop', {
+	      set: function(v) {
+	        return self.scrollTo(-v, 400)
+	      },
+	      get: function() {
+	        return -self.y
+	      }
+	    })
+	  }
+	  this.on('scroll', function() {
+	    var e = customEvent('scroll')
+	    if (e) el.dispatchEvent(e)
+	  })
+	  opts = opts || {}
+	  this.max = opts.max || 80
+	  if (opts.handlebar) {
+	    this.handlebar = new Handlebar(el)
+	  }
+	  this._refresh = this.refresh.bind(this)
+	  window.addEventListener('orientationchange', this._refresh, false)
+	  window.addEventListener('resize', this._refresh, false)
+	}
+	
+	Emitter(Iscroll.prototype)
+	
+	/**
+	 * Bind events
+	 *
+	 * @api private
+	 */
+	Iscroll.prototype.bind = function() {
+	  this.events = events(this.scrollable, this)
+	  this.docEvents = events(document, this)
+	
+	  // W3C touch events
+	  this.events.bind('touchstart')
+	  this.events.bind('touchmove')
+	  this.events.bind('touchleave', 'ontouchend')
+	  this.docEvents.bind('touchend')
+	  this.docEvents.bind('touchcancel', 'ontouchend')
+	}
+	
+	/**
+	 * Recalculate the height
+	 *
+	 * @api public
+	 */
+	Iscroll.prototype.refresh = function(noscroll) {
+	  var vh = this.viewHeight = this.scrollable.getBoundingClientRect().height
+	  var ch = this.el.getBoundingClientRect().height
+	  var h = Math.max(vh, height(this.el))
+	  if (ch !== h) {
+	    this.el.style.height = h + 'px'
+	    this.height = h
+	  } else {
+	    this.height = h
+	  }
+	  this.minY = min(0, vh - this.height)
+	  if (noscroll === true) return
+	  if (this.y < this.minY) {
+	    this.scrollTo(this.minY, 300)
+	  } else if (this.y > 0) {
+	    this.scrollTo(0, 300)
+	  }
+	}
+	
+	/**
+	 * Unbind all event listeners, and remove handlebar if necessary
+	 *
+	 * @api public
+	 */
+	Iscroll.prototype.unbind = function() {
+	  this.off()
+	  this.events.unbind()
+	  this.docEvents.unbind()
+	  window.removeEventListener('orientationchange', this._refresh, false)
+	  window.removeEventListener('resize', this._refresh, false)
+	  if (this.handlebar) this.scrollable.removeChild(this.handlebar.el)
+	}
+	
+	
+	/**
+	 * touchstart event handler
+	 *
+	 * @param  {Event}  e
+	 * @api private
+	 */
+	Iscroll.prototype.ontouchstart = function(e) {
+	  this.speed = null
+	  if (this.tween) this.tween.stop()
+	  this.refresh(true)
+	  var start = this.y
+	  if (e.target === this.scrollable) {
+	    start = min(start, 0)
+	    start = max(start, this.minY)
+	      // fix the invalid start position
+	    if (start !== this.y) return this.scrollTo(start, 200)
+	    return
+	  }
+	
+	  var touch = this.getTouch(e)
+	  var sx = touch.clientX
+	  var sy = touch.clientY
+	  var at = now()
+	
+	
+	  this.onstart = function(x, y) {
+	    // no moved up and down, so don't know
+	    if (sy === y) return
+	    this.onstart = null
+	    var dx = Math.abs(x - sx)
+	    var dy = Math.abs(y - sy)
+	      // move left and right
+	    if (dx > dy) return
+	    this.clientY = touch.clientY
+	    this.dy = 0
+	    this.ts = now()
+	    this.down = {
+	      x: sx,
+	      y: sy,
+	      start: start,
+	      at: at
+	    }
+	    if (this.handlebar) this.resizeHandlebar()
+	    this.emit('start', this.y)
+	    return true
+	  }
+	}
+	
+	/**
+	 * touchmove event handler
+	 *
+	 * @param  {Event}  e
+	 * @api private
+	 */
+	Iscroll.prototype.ontouchmove = function(e) {
+	  e.preventDefault()
+	  if (!this.down && !this.onstart) return
+	  var touch = this.getTouch(e)
+	  var x = touch.clientX
+	  var y = touch.clientY
+	  if (this.onstart) {
+	    var started = this.onstart(x, y)
+	    if (started !== true) return
+	  }
+	  var down = this.down
+	  var dy = this.dy = y - down.y
+	
+	  //calculate speed every 100 milisecond
+	  this.calcuteSpeed(touch.clientY, down.at)
+	  var start = this.down.start
+	  var dest = start + dy
+	  dest = min(dest, this.max)
+	  dest = max(dest, this.minY - this.max)
+	  this.translate(dest)
+	}
+	
+	/**
+	 * Calcute speed by clientY
+	 *
+	 * @param {Number} y
+	 * @api priavte
+	 */
+	Iscroll.prototype.calcuteSpeed = function(y, start) {
+	  var ts = now()
+	  var dt = ts - this.ts
+	  if (ts - start < 100) {
+	    this.distance = y - this.clientY
+	    this.speed = Math.abs(this.distance / dt)
+	  } else if (dt > 100) {
+	    this.distance = y - this.clientY
+	    this.speed = Math.abs(this.distance / dt)
+	    this.ts = ts
+	    this.clientY = y
+	  }
+	}
+	
+	/**
+	 * Event handler for touchend
+	 *
+	 * @param  {Event}  e
+	 * @api private
+	 */
+	Iscroll.prototype.ontouchend = function(e) {
+	  if (!this.down) return
+	  var at = this.down.at
+	  this.down = null
+	  var touch = this.getTouch(e)
+	  this.calcuteSpeed(touch.clientY, at)
+	  var m = this.momentum()
+	  this.scrollTo(m.dest, m.duration, m.ease)
+	  this.emit('release', this.y)
+	}
+	
+	/**
+	 * Calculate the animate props for moveon
+	 *
+	 * @return {Object}
+	 * @api private
+	 */
+	Iscroll.prototype.momentum = function() {
+	  var deceleration = 0.001
+	  var speed = this.speed
+	  speed = min(speed, 2)
+	  var y = this.y
+	  var rate = (4 - Math.PI)/2
+	  var destination = y + rate * (speed * speed) / (2 * deceleration) * (this.distance < 0 ? -1 : 1)
+	  var duration = speed / deceleration
+	  var ease
+	  var minY = this.minY
+	  if (y > 0 || y < minY) {
+	    duration = 500
+	    ease = 'out-circ'
+	    destination = y > 0 ? 0 : minY
+	  } else if (destination > 0) {
+	    destination = 0
+	    ease = 'out-back'
+	  } else if (destination < minY) {
+	    destination = minY
+	    ease = 'out-back'
+	  }
+	  return {
+	    dest: destination,
+	    duration: duration,
+	    ease: ease
+	  }
+	}
+	
+	
+	/**
+	 * Scroll to potions y with optional duration and ease function
+	 *
+	 * @param {Number} y
+	 * @param {Number} duration
+	 * @param {String} easing
+	 * @api public
+	 */
+	Iscroll.prototype.scrollTo = function(y, duration, easing) {
+	  if (this.tween) this.tween.stop()
+	  var transition = (duration > 0 && y !== this.y)
+	  if (!transition) {
+	    this.translate(y)
+	    return this.onScrollEnd()
+	  }
+	
+	  easing = easing || 'out-cube'
+	  var tween = this.tween = Tween({
+	      y: this.y
+	    })
+	    .ease(easing)
+	    .to({
+	      y: y
+	    })
+	    .duration(duration)
+	
+	  var self = this
+	  tween.update(function(o) {
+	    self.translate(o.y)
+	  })
+	  var promise = new Promise(function(resolve) {
+	    tween.on('end', function() {
+	      resolve()
+	      animate = function() {} // eslint-disable-line
+	      if (!tween.stopped) {
+	        self.onScrollEnd()
+	      }
+	    })
+	  })
+	
+	  function animate() {
+	    raf(animate)
+	    tween.update()
+	  }
+	
+	  animate()
+	  return promise
+	}
+	
+	/**
+	 * Scrollend
+	 *
+	 * @api private
+	 */
+	Iscroll.prototype.onScrollEnd = function() {
+	  this.hideHandlebar()
+	  var y = this.y
+	  this.emit('scrollend', {
+	    top: y >= 0,
+	    bottom: y <= this.minY
+	  })
+	}
+	
+	/**
+	 * Gets the appropriate "touch" object for the `e` event. The event may be from
+	 * a "mouse", "touch", or "Pointer" event, so the normalization happens here.
+	 *
+	 * @api private
+	 */
+	
+	Iscroll.prototype.getTouch = function(e) {
+	  // "mouse" and "Pointer" events just use the event object itself
+	  var touch = e
+	  if (e.changedTouches && e.changedTouches.length > 0) {
+	    // W3C "touch" events use the `changedTouches` array
+	    touch = e.changedTouches[0]
+	  }
+	  return touch
+	}
+	
+	
+	/**
+	 * Translate to `x`.
+	 *
+	 *
+	 * @api private
+	 */
+	
+	Iscroll.prototype.translate = function(y) {
+	  var s = this.el.style
+	  if (isNaN(y)) return
+	  y = Math.floor(y)
+	    //reach the end
+	  if (this.y !== y) {
+	    this.y = y
+	    this.emit('scroll', -y)
+	    if (this.handlebar) this.transformHandlebar()
+	  }
+	  if (has3d) {
+	    s[transform] = 'translate3d(0, ' + y + 'px' + ', 0)'
+	  } else {
+	    s[transform] = 'translateY(' + y + 'px)'
+	  }
+	}
+	
+	/**
+	 * Sets the "touchAction" CSS style property to `value`.
+	 *
+	 * @api private
+	 */
+	
+	Iscroll.prototype.touchAction = function(value) {
+	  var s = this.el.style
+	  if (touchAction) {
+	    s[touchAction] = value
+	  }
+	}
+	
+	/**
+	 * Transform handlebar
+	 *
+	 * @api private
+	 */
+	Iscroll.prototype.transformHandlebar = throttle(function() {
+	  var vh = this.viewHeight
+	  var h = this.height
+	  var y = Math.round(-(vh - vh * vh / h) * this.y / (h - vh))
+	  this.handlebar.translateY(y)
+	}, 100)
+	
+	/**
+	 * show the handlebar and size it
+	 * @api public
+	 */
+	Iscroll.prototype.resizeHandlebar = function() {
+	  var vh = this.viewHeight
+	  var h = vh * vh / this.height
+	  this.handlebar.resize(h)
+	}
+	
+	/**
+	 * Hide handlebar
+	 *
+	 * @api private
+	 */
+	Iscroll.prototype.hideHandlebar = function() {
+	  if (this.handlebar) this.handlebar.hide()
+	}
+	
+	module.exports = Iscroll
+
+
+/***/ },
+/* 25 */
 /***/ function(module, exports) {
 
 	
@@ -1675,6 +2169,891 @@
 	Emitter.prototype.hasListeners = function(event){
 	  return !! this.listeners(event).length;
 	};
+
+
+/***/ },
+/* 26 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+	/**
+	 * Module dependencies.
+	 */
+	
+	try {
+	  var events = __webpack_require__(5);
+	} catch(err) {
+	  var events = __webpack_require__(5);
+	}
+	
+	try {
+	  var delegate = __webpack_require__(27);
+	} catch(err) {
+	  var delegate = __webpack_require__(27);
+	}
+	
+	/**
+	 * Expose `Events`.
+	 */
+	
+	module.exports = Events;
+	
+	/**
+	 * Initialize an `Events` with the given
+	 * `el` object which events will be bound to,
+	 * and the `obj` which will receive method calls.
+	 *
+	 * @param {Object} el
+	 * @param {Object} obj
+	 * @api public
+	 */
+	
+	function Events(el, obj) {
+	  if (!(this instanceof Events)) return new Events(el, obj);
+	  if (!el) throw new Error('element required');
+	  if (!obj) throw new Error('object required');
+	  this.el = el;
+	  this.obj = obj;
+	  this._events = {};
+	}
+	
+	/**
+	 * Subscription helper.
+	 */
+	
+	Events.prototype.sub = function(event, method, cb){
+	  this._events[event] = this._events[event] || {};
+	  this._events[event][method] = cb;
+	};
+	
+	/**
+	 * Bind to `event` with optional `method` name.
+	 * When `method` is undefined it becomes `event`
+	 * with the "on" prefix.
+	 *
+	 * Examples:
+	 *
+	 *  Direct event handling:
+	 *
+	 *    events.bind('click') // implies "onclick"
+	 *    events.bind('click', 'remove')
+	 *    events.bind('click', 'sort', 'asc')
+	 *
+	 *  Delegated event handling:
+	 *
+	 *    events.bind('click li > a')
+	 *    events.bind('click li > a', 'remove')
+	 *    events.bind('click a.sort-ascending', 'sort', 'asc')
+	 *    events.bind('click a.sort-descending', 'sort', 'desc')
+	 *
+	 * @param {String} event
+	 * @param {String|function} [method]
+	 * @return {Function} callback
+	 * @api public
+	 */
+	
+	Events.prototype.bind = function(event, method){
+	  var e = parse(event);
+	  var el = this.el;
+	  var obj = this.obj;
+	  var name = e.name;
+	  var method = method || 'on' + name;
+	  var args = [].slice.call(arguments, 2);
+	
+	  // callback
+	  function cb(){
+	    var a = [].slice.call(arguments).concat(args);
+	    obj[method].apply(obj, a);
+	  }
+	
+	  // bind
+	  if (e.selector) {
+	    cb = delegate.bind(el, e.selector, name, cb);
+	  } else {
+	    events.bind(el, name, cb);
+	  }
+	
+	  // subscription for unbinding
+	  this.sub(name, method, cb);
+	
+	  return cb;
+	};
+	
+	/**
+	 * Unbind a single binding, all bindings for `event`,
+	 * or all bindings within the manager.
+	 *
+	 * Examples:
+	 *
+	 *  Unbind direct handlers:
+	 *
+	 *     events.unbind('click', 'remove')
+	 *     events.unbind('click')
+	 *     events.unbind()
+	 *
+	 * Unbind delegate handlers:
+	 *
+	 *     events.unbind('click', 'remove')
+	 *     events.unbind('click')
+	 *     events.unbind()
+	 *
+	 * @param {String|Function} [event]
+	 * @param {String|Function} [method]
+	 * @api public
+	 */
+	
+	Events.prototype.unbind = function(event, method){
+	  if (0 == arguments.length) return this.unbindAll();
+	  if (1 == arguments.length) return this.unbindAllOf(event);
+	
+	  // no bindings for this event
+	  var bindings = this._events[event];
+	  if (!bindings) return;
+	
+	  // no bindings for this method
+	  var cb = bindings[method];
+	  if (!cb) return;
+	
+	  events.unbind(this.el, event, cb);
+	};
+	
+	/**
+	 * Unbind all events.
+	 *
+	 * @api private
+	 */
+	
+	Events.prototype.unbindAll = function(){
+	  for (var event in this._events) {
+	    this.unbindAllOf(event);
+	  }
+	};
+	
+	/**
+	 * Unbind all events for `event`.
+	 *
+	 * @param {String} event
+	 * @api private
+	 */
+	
+	Events.prototype.unbindAllOf = function(event){
+	  var bindings = this._events[event];
+	  if (!bindings) return;
+	
+	  for (var method in bindings) {
+	    this.unbind(event, method);
+	  }
+	};
+	
+	/**
+	 * Parse `event`.
+	 *
+	 * @param {String} event
+	 * @return {Object}
+	 * @api private
+	 */
+	
+	function parse(event) {
+	  var parts = event.split(/ +/);
+	  return {
+	    name: parts.shift(),
+	    selector: parts.join(' ')
+	  }
+	}
+
+
+/***/ },
+/* 27 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Module dependencies.
+	 */
+	
+	try {
+	  var closest = __webpack_require__(13);
+	} catch(err) {
+	  var closest = __webpack_require__(13);
+	}
+	
+	try {
+	  var event = __webpack_require__(5);
+	} catch(err) {
+	  var event = __webpack_require__(5);
+	}
+	
+	/**
+	 * Delegate event `type` to `selector`
+	 * and invoke `fn(e)`. A callback function
+	 * is returned which may be passed to `.unbind()`.
+	 *
+	 * @param {Element} el
+	 * @param {String} selector
+	 * @param {String} type
+	 * @param {Function} fn
+	 * @param {Boolean} capture
+	 * @return {Function}
+	 * @api public
+	 */
+	
+	exports.bind = function(el, selector, type, fn, capture){
+	  return event.bind(el, type, function(e){
+	    var target = e.target || e.srcElement;
+	    e.delegateTarget = closest(target, selector, true, el);
+	    if (e.delegateTarget) fn.call(el, e);
+	  }, capture);
+	};
+	
+	/**
+	 * Unbind event `type`'s callback `fn`.
+	 *
+	 * @param {Element} el
+	 * @param {String} type
+	 * @param {Function} fn
+	 * @param {Boolean} capture
+	 * @api public
+	 */
+	
+	exports.unbind = function(el, type, fn, capture){
+	  event.unbind(el, type, fn, capture);
+	};
+
+
+/***/ },
+/* 28 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+	/**
+	 * Module dependencies.
+	 */
+	
+	var Emitter = __webpack_require__(25);
+	var clone = __webpack_require__(29);
+	var type = __webpack_require__(30);
+	var ease = __webpack_require__(31);
+	
+	/**
+	 * Expose `Tween`.
+	 */
+	
+	module.exports = Tween;
+	
+	/**
+	 * Initialize a new `Tween` with `obj`.
+	 *
+	 * @param {Object|Array} obj
+	 * @api public
+	 */
+	
+	function Tween(obj) {
+	  if (!(this instanceof Tween)) return new Tween(obj);
+	  this._from = obj;
+	  this.ease('linear');
+	  this.duration(500);
+	}
+	
+	/**
+	 * Mixin emitter.
+	 */
+	
+	Emitter(Tween.prototype);
+	
+	/**
+	 * Reset the tween.
+	 *
+	 * @api public
+	 */
+	
+	Tween.prototype.reset = function(){
+	  this.isArray = 'array' === type(this._from);
+	  this._curr = clone(this._from);
+	  this._done = false;
+	  this._start = Date.now();
+	  return this;
+	};
+	
+	/**
+	 * Tween to `obj` and reset internal state.
+	 *
+	 *    tween.to({ x: 50, y: 100 })
+	 *
+	 * @param {Object|Array} obj
+	 * @return {Tween} self
+	 * @api public
+	 */
+	
+	Tween.prototype.to = function(obj){
+	  this.reset();
+	  this._to = obj;
+	  return this;
+	};
+	
+	/**
+	 * Set duration to `ms` [500].
+	 *
+	 * @param {Number} ms
+	 * @return {Tween} self
+	 * @api public
+	 */
+	
+	Tween.prototype.duration = function(ms){
+	  this._duration = ms;
+	  return this;
+	};
+	
+	/**
+	 * Set easing function to `fn`.
+	 *
+	 *    tween.ease('in-out-sine')
+	 *
+	 * @param {String|Function} fn
+	 * @return {Tween}
+	 * @api public
+	 */
+	
+	Tween.prototype.ease = function(fn){
+	  fn = 'function' == typeof fn ? fn : ease[fn];
+	  if (!fn) throw new TypeError('invalid easing function');
+	  this._ease = fn;
+	  return this;
+	};
+	
+	/**
+	 * Stop the tween and immediately emit "stop" and "end".
+	 *
+	 * @return {Tween}
+	 * @api public
+	 */
+	
+	Tween.prototype.stop = function(){
+	  this.stopped = true;
+	  this._done = true;
+	  this.emit('stop');
+	  this.emit('end');
+	  return this;
+	};
+	
+	/**
+	 * Perform a step.
+	 *
+	 * @return {Tween} self
+	 * @api private
+	 */
+	
+	Tween.prototype.step = function(){
+	  if (this._done) return;
+	
+	  // duration
+	  var duration = this._duration;
+	  var now = Date.now();
+	  var delta = now - this._start;
+	  var done = delta >= duration;
+	
+	  // complete
+	  if (done) {
+	    this._from = this._to;
+	    this._update(this._to);
+	    this._done = true;
+	    this.emit('end');
+	    return this;
+	  }
+	
+	  // tween
+	  var from = this._from;
+	  var to = this._to;
+	  var curr = this._curr;
+	  var fn = this._ease;
+	  var p = (now - this._start) / duration;
+	  var n = fn(p);
+	
+	  // array
+	  if (this.isArray) {
+	    for (var i = 0; i < from.length; ++i) {
+	      curr[i] = from[i] + (to[i] - from[i]) * n;
+	    }
+	
+	    this._update(curr);
+	    return this;
+	  }
+	
+	  // objech
+	  for (var k in from) {
+	    curr[k] = from[k] + (to[k] - from[k]) * n;
+	  }
+	
+	  this._update(curr);
+	  return this;
+	};
+	
+	/**
+	 * Set update function to `fn` or
+	 * when no argument is given this performs
+	 * a "step".
+	 *
+	 * @param {Function} fn
+	 * @return {Tween} self
+	 * @api public
+	 */
+	
+	Tween.prototype.update = function(fn){
+	  if (0 == arguments.length) return this.step();
+	  this._update = fn;
+	  return this;
+	};
+
+/***/ },
+/* 29 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Module dependencies.
+	 */
+	
+	var type;
+	try {
+	  type = __webpack_require__(30);
+	} catch (_) {
+	  type = __webpack_require__(30);
+	}
+	
+	/**
+	 * Module exports.
+	 */
+	
+	module.exports = clone;
+	
+	/**
+	 * Clones objects.
+	 *
+	 * @param {Mixed} any object
+	 * @api public
+	 */
+	
+	function clone(obj){
+	  switch (type(obj)) {
+	    case 'object':
+	      var copy = {};
+	      for (var key in obj) {
+	        if (obj.hasOwnProperty(key)) {
+	          copy[key] = clone(obj[key]);
+	        }
+	      }
+	      return copy;
+	
+	    case 'array':
+	      var copy = new Array(obj.length);
+	      for (var i = 0, l = obj.length; i < l; i++) {
+	        copy[i] = clone(obj[i]);
+	      }
+	      return copy;
+	
+	    case 'regexp':
+	      // from millermedeiros/amd-utils - MIT
+	      var flags = '';
+	      flags += obj.multiline ? 'm' : '';
+	      flags += obj.global ? 'g' : '';
+	      flags += obj.ignoreCase ? 'i' : '';
+	      return new RegExp(obj.source, flags);
+	
+	    case 'date':
+	      return new Date(obj.getTime());
+	
+	    default: // string, number, boolean, …
+	      return obj;
+	  }
+	}
+
+
+/***/ },
+/* 30 */
+/***/ function(module, exports) {
+
+	/**
+	 * toString ref.
+	 */
+	
+	var toString = Object.prototype.toString;
+	
+	/**
+	 * Return the type of `val`.
+	 *
+	 * @param {Mixed} val
+	 * @return {String}
+	 * @api public
+	 */
+	
+	module.exports = function(val){
+	  switch (toString.call(val)) {
+	    case '[object Date]': return 'date';
+	    case '[object RegExp]': return 'regexp';
+	    case '[object Arguments]': return 'arguments';
+	    case '[object Array]': return 'array';
+	    case '[object Error]': return 'error';
+	  }
+	
+	  if (val === null) return 'null';
+	  if (val === undefined) return 'undefined';
+	  if (val !== val) return 'nan';
+	  if (val && val.nodeType === 1) return 'element';
+	
+	  val = val.valueOf
+	    ? val.valueOf()
+	    : Object.prototype.valueOf.apply(val)
+	
+	  return typeof val;
+	};
+
+
+/***/ },
+/* 31 */
+/***/ function(module, exports) {
+
+	
+	// easing functions from "Tween.js"
+	
+	exports.linear = function(n){
+	  return n;
+	};
+	
+	exports.inQuad = function(n){
+	  return n * n;
+	};
+	
+	exports.outQuad = function(n){
+	  return n * (2 - n);
+	};
+	
+	exports.inOutQuad = function(n){
+	  n *= 2;
+	  if (n < 1) return 0.5 * n * n;
+	  return - 0.5 * (--n * (n - 2) - 1);
+	};
+	
+	exports.inCube = function(n){
+	  return n * n * n;
+	};
+	
+	exports.outCube = function(n){
+	  return --n * n * n + 1;
+	};
+	
+	exports.inOutCube = function(n){
+	  n *= 2;
+	  if (n < 1) return 0.5 * n * n * n;
+	  return 0.5 * ((n -= 2 ) * n * n + 2);
+	};
+	
+	exports.inQuart = function(n){
+	  return n * n * n * n;
+	};
+	
+	exports.outQuart = function(n){
+	  return 1 - (--n * n * n * n);
+	};
+	
+	exports.inOutQuart = function(n){
+	  n *= 2;
+	  if (n < 1) return 0.5 * n * n * n * n;
+	  return -0.5 * ((n -= 2) * n * n * n - 2);
+	};
+	
+	exports.inQuint = function(n){
+	  return n * n * n * n * n;
+	}
+	
+	exports.outQuint = function(n){
+	  return --n * n * n * n * n + 1;
+	}
+	
+	exports.inOutQuint = function(n){
+	  n *= 2;
+	  if (n < 1) return 0.5 * n * n * n * n * n;
+	  return 0.5 * ((n -= 2) * n * n * n * n + 2);
+	};
+	
+	exports.inSine = function(n){
+	  return 1 - Math.cos(n * Math.PI / 2 );
+	};
+	
+	exports.outSine = function(n){
+	  return Math.sin(n * Math.PI / 2);
+	};
+	
+	exports.inOutSine = function(n){
+	  return .5 * (1 - Math.cos(Math.PI * n));
+	};
+	
+	exports.inExpo = function(n){
+	  return 0 == n ? 0 : Math.pow(1024, n - 1);
+	};
+	
+	exports.outExpo = function(n){
+	  return 1 == n ? n : 1 - Math.pow(2, -10 * n);
+	};
+	
+	exports.inOutExpo = function(n){
+	  if (0 == n) return 0;
+	  if (1 == n) return 1;
+	  if ((n *= 2) < 1) return .5 * Math.pow(1024, n - 1);
+	  return .5 * (-Math.pow(2, -10 * (n - 1)) + 2);
+	};
+	
+	exports.inCirc = function(n){
+	  return 1 - Math.sqrt(1 - n * n);
+	};
+	
+	exports.outCirc = function(n){
+	  return Math.sqrt(1 - (--n * n));
+	};
+	
+	exports.inOutCirc = function(n){
+	  n *= 2
+	  if (n < 1) return -0.5 * (Math.sqrt(1 - n * n) - 1);
+	  return 0.5 * (Math.sqrt(1 - (n -= 2) * n) + 1);
+	};
+	
+	exports.inBack = function(n){
+	  var s = 1.70158;
+	  return n * n * (( s + 1 ) * n - s);
+	};
+	
+	exports.outBack = function(n){
+	  var s = 1.70158;
+	  return --n * n * ((s + 1) * n + s) + 1;
+	};
+	
+	exports.inOutBack = function(n){
+	  var s = 1.70158 * 1.525;
+	  if ( ( n *= 2 ) < 1 ) return 0.5 * ( n * n * ( ( s + 1 ) * n - s ) );
+	  return 0.5 * ( ( n -= 2 ) * n * ( ( s + 1 ) * n + s ) + 2 );
+	};
+	
+	exports.inBounce = function(n){
+	  return 1 - exports.outBounce(1 - n);
+	};
+	
+	exports.outBounce = function(n){
+	  if ( n < ( 1 / 2.75 ) ) {
+	    return 7.5625 * n * n;
+	  } else if ( n < ( 2 / 2.75 ) ) {
+	    return 7.5625 * ( n -= ( 1.5 / 2.75 ) ) * n + 0.75;
+	  } else if ( n < ( 2.5 / 2.75 ) ) {
+	    return 7.5625 * ( n -= ( 2.25 / 2.75 ) ) * n + 0.9375;
+	  } else {
+	    return 7.5625 * ( n -= ( 2.625 / 2.75 ) ) * n + 0.984375;
+	  }
+	};
+	
+	exports.inOutBounce = function(n){
+	  if (n < .5) return exports.inBounce(n * 2) * .5;
+	  return exports.outBounce(n * 2 - 1) * .5 + .5;
+	};
+	
+	// aliases
+	
+	exports['in-quad'] = exports.inQuad;
+	exports['out-quad'] = exports.outQuad;
+	exports['in-out-quad'] = exports.inOutQuad;
+	exports['in-cube'] = exports.inCube;
+	exports['out-cube'] = exports.outCube;
+	exports['in-out-cube'] = exports.inOutCube;
+	exports['in-quart'] = exports.inQuart;
+	exports['out-quart'] = exports.outQuart;
+	exports['in-out-quart'] = exports.inOutQuart;
+	exports['in-quint'] = exports.inQuint;
+	exports['out-quint'] = exports.outQuint;
+	exports['in-out-quint'] = exports.inOutQuint;
+	exports['in-sine'] = exports.inSine;
+	exports['out-sine'] = exports.outSine;
+	exports['in-out-sine'] = exports.inOutSine;
+	exports['in-expo'] = exports.inExpo;
+	exports['out-expo'] = exports.outExpo;
+	exports['in-out-expo'] = exports.inOutExpo;
+	exports['in-circ'] = exports.inCirc;
+	exports['out-circ'] = exports.outCirc;
+	exports['in-out-circ'] = exports.inOutCirc;
+	exports['in-back'] = exports.inBack;
+	exports['out-back'] = exports.outBack;
+	exports['in-out-back'] = exports.inOutBack;
+	exports['in-bounce'] = exports.inBounce;
+	exports['out-bounce'] = exports.outBounce;
+	exports['in-out-bounce'] = exports.inOutBounce;
+
+
+/***/ },
+/* 32 */
+/***/ function(module, exports) {
+
+	/**
+	 * Expose `requestAnimationFrame()`.
+	 */
+	
+	exports = module.exports = window.requestAnimationFrame
+	  || window.webkitRequestAnimationFrame
+	  || window.mozRequestAnimationFrame
+	  || fallback;
+	
+	/**
+	 * Fallback implementation.
+	 */
+	
+	var prev = new Date().getTime();
+	function fallback(fn) {
+	  var curr = new Date().getTime();
+	  var ms = Math.max(0, 16 - (curr - prev));
+	  var req = setTimeout(fn, ms);
+	  prev = curr;
+	  return req;
+	}
+	
+	/**
+	 * Cancel.
+	 */
+	
+	var cancel = window.cancelAnimationFrame
+	  || window.webkitCancelAnimationFrame
+	  || window.mozCancelAnimationFrame
+	  || window.clearTimeout;
+	
+	exports.cancel = function(id){
+	  cancel.call(window, id);
+	};
+
+
+/***/ },
+/* 33 */
+/***/ function(module, exports) {
+
+	module.exports = throttle;
+	
+	/**
+	 * Returns a new function that, when invoked, invokes `func` at most once per `wait` milliseconds.
+	 *
+	 * @param {Function} func Function to wrap.
+	 * @param {Number} wait Number of milliseconds that must elapse between `func` invocations.
+	 * @return {Function} A new function that wraps the `func` function passed in.
+	 */
+	
+	function throttle (func, wait) {
+	  var ctx, args, rtn, timeoutID; // caching
+	  var last = 0;
+	
+	  return function throttled () {
+	    ctx = this;
+	    args = arguments;
+	    var delta = new Date() - last;
+	    if (!timeoutID)
+	      if (delta >= wait) call();
+	      else timeoutID = setTimeout(call, wait - delta);
+	    return rtn;
+	  };
+	
+	  function call () {
+	    timeoutID = 0;
+	    last = +new Date();
+	    rtn = func.apply(ctx, args);
+	    ctx = null;
+	    args = null;
+	  }
+	}
+
+
+/***/ },
+/* 34 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var detect = __webpack_require__(17)
+	var has3d = detect.has3d
+	var transform = detect.transform
+	
+	/**
+	 * Handlebar contructor
+	 *
+	 * @param {Element} scrollable
+	 * @contructor
+	 * @api public
+	 */
+	function handlebar(scrollable) {
+	  var el = this.el = document.createElement('div')
+	  el.className = 'iscroll-handlebar'
+	  scrollable.appendChild(el)
+	}
+	
+	/**
+	 * Show the handlebar and resize it
+	 *
+	 * @param {Number} h
+	 * @api public
+	 */
+	handlebar.prototype.resize = function (h) {
+	  var s = this.el.style
+	  s.height = h + 'px'
+	  s.backgroundColor = 'rgba(0,0,0,0.4)'
+	}
+	
+	/**
+	 * Hide this handlebar
+	 *
+	 * @api public
+	 */
+	handlebar.prototype.hide = function () {
+	  this.el.style.backgroundColor = 'transparent'
+	}
+	
+	/**
+	 * Move handlebar by translateY
+	 *
+	 * @param {Number} y
+	 * @api public
+	 */
+	handlebar.prototype.translateY= function(y){
+	  var s = this.el.style
+	  if (has3d) {
+	    s[transform] = 'translate3d(0, ' + y + 'px' + ', 0)'
+	  } else {
+	    s[transform] = 'translateY(' + y + 'px)'
+	  }
+	}
+	
+	module.exports = handlebar
+
+
+/***/ },
+/* 35 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var computedStyle = __webpack_require__(16)
+	
+	/**
+	 * Find last visible element
+	 *
+	 * @param  {Element}  el
+	 * @return {Element}
+	 */
+	function lastVisible(el) {
+	  var nodes = el.childNodes
+	  for(var i = nodes.length - 1; i >=0; i --) {
+	    var node = nodes[i]
+	    if (node.nodeType === 1 && computedStyle(node, 'display') !== 'none') {
+	      return node
+	    }
+	  }
+	}
+	
+	function height(node) {
+	  var child = lastVisible(node)
+	  var pb = parseInt(computedStyle(node, 'paddingBottom'), 10)
+	  var pt = parseInt(computedStyle(node, 'paddingTop'), 10)
+	  if (!child) return pb + pt
+	  var mb = pb ? parseInt(computedStyle(child, 'marginBottom'), 10) : 0
+	  var cb = child.getBoundingClientRect().bottom
+	  var r = node.getBoundingClientRect()
+	  var res = r.height + (cb - r.bottom) + mb + pb
+	  return res
+	}
+	
+	module.exports = height
 
 
 /***/ }
