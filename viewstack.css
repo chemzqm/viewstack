@@ -70,3 +70,12 @@
   overflow-y: scroll;
   -webkit-overflow-scrolling: touch;
 }
+.viewstack-action {
+  opacity: 1;
+  position: absolute;
+  bottom: 0px;
+  width: 40px;
+  right: 0px;
+  top: 0;
+}
+

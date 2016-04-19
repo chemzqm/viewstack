@@ -7,7 +7,11 @@ var ViewStack = require('..')
 var header = document.querySelector('header')
 var body = document.querySelector('.viewstack-body')
 
-var st = new ViewStack(header, body)
+var st = new ViewStack(header, body, {
+  create: function (e) {
+    console.log(e)
+  }
+})
 st.on('back', function (level) {
   console.log(level)
 })
@@ -34,7 +38,8 @@ ontap(document.body, function (e) {
       bgColor: '#111',
       back: back,
       text: target.getAttribute('data-title') || 'title',
-      icon: 'icon-plus'
-    }, createDiv(), true)
+      icon: back ? 'icon-plus' : null,
+      action: back ? 'create' : null
+    }, createDiv())
   }
 })
