@@ -37,6 +37,9 @@ function createComponent() {
         icon: 'icon-submit'
       }, createDiv())
     },
+    refresh: function () {
+      console.log('refresh')
+    },
     remove: function () {
       div.parentNode.removeChild(div)
     }
