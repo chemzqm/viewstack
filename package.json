@@ -1,6 +1,6 @@
 {
   "name": "viewstack",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "description": "lighweight view switch component",
   "main": "lib/index.js",
   "directories": {
